@@ -1,0 +1,48 @@
+<?php
+use App\Models\Nasabah;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
+
+class TransaksiController extends Controller
+{
+    public function index()
+    {
+        $nasabahs = Nasabah::all();
+        $transaksis = Transaksi::with('nasabah')->get();
+        return view('transaksi', compact('nasabah', 'transaksi'));
+    }
+}
+
+<div class="card">
+<div class="card-header">
+    <h3 class="card-title"><i class="fas fa-home"></i><b> Data Transaksi Sampah</b></h3>
+</div>
+<!-- /.card-header -->
+<div class="card-body">
+    <!-- Table -->
+    <table id="transaksiSampahTable" class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Tanggal Transaksi</th>
+                <th>Nama Nasabah</th>
+                <th>Jenis Sampah</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($transaksi as $item)
+            <tr>
+                <td>{{ $item->tanggal_transaksi }}</td>
+                <td>{{ $item->nasabah->nama }}</td>
+                <td>{{ $item->jenis_sampah->nama }}</td>
+                <td>{{ $item->status }} {{ $item->jenis_sampah->harga_per_kg }}/KG</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <!-- End Table -->
+</div>
+<!-- /.card-body -->
+</div>
+
+Route::get('/transaksi', [DaftarJenisSampah::class, 'index'])->name("transaksi");
